@@ -1,0 +1,108 @@
+; Sample Beancount Ledger for IT Services Business
+; This demonstrates a typical IT consulting/services company accounting structure
+; Use case: Remote work, international clients, platform-based billing
+;
+; Business Model:
+; - IT consulting services delivered remotely
+; - Revenue in USD from international clients
+; - Operating expenses in INR (or local currency)
+; - Platform fees (e.g., Upwork, Toptal, Fiverr)
+; - Multi-currency operations with forex considerations
+
+option "title" "IT Services Company - July 2024 Financial Statements"
+option "operating_currency" "INR"
+
+; Commodities
+1960-01-01 commodity USD
+1960-01-01 commodity INR
+
+; ===== ASSETS =====
+1960-01-01 open Assets:Cash:BankAccount              INR
+1960-01-01 open Assets:Cash:PaymentGateway           INR
+1960-01-01 open Assets:AccountsReceivable            USD
+1960-01-01 open Assets:Platform:Escrow:Project1      USD
+1960-01-01 open Assets:Platform:Escrow:Project2      USD
+1960-01-01 open Assets:Platform:Escrow:Project3      USD
+
+; ===== LIABILITIES =====
+1960-01-01 open Liabilities:CreditCard:Business      INR
+1960-01-01 open Liabilities:CreditCard:Operations    INR
+
+; ===== INCOME =====
+1960-01-01 open Income:ClientServices                USD
+1960-01-01 open Income:ForexGain                     INR
+
+; ===== EXPENSES =====
+1960-01-01 open Expenses:Platform:ServiceFees        USD
+1960-01-01 open Expenses:Platform:WithholdingTax     USD
+1960-01-01 open Expenses:Salaries:TeamCompensation   INR
+1960-01-01 open Expenses:Operations:General          INR
+1960-01-01 open Expenses:Technology:Software         INR
+1960-01-01 open Expenses:Technology:Infrastructure   INR
+
+; ===== EQUITY =====
+1960-01-01 open Equity:Opening-Balances              INR
+
+; ===== EXCHANGE RATES =====
+; Average monthly rate for operations
+2024-07-31 price USD 83.50 INR
+
+; ===== OPENING BALANCES =====
+2024-01-01 * "Opening balances"
+  Assets:Cash:BankAccount             500000.00 INR
+  Equity:Opening-Balances            -500000.00 INR
+
+; ===== JULY 2024 REVENUE =====
+; Gross revenue from client services
+2024-07-31 * "July 2024 Revenue - Client Services"
+  Income:ClientServices               -23000.00 USD
+  Assets:AccountsReceivable            23000.00 USD
+
+; Platform costs (10% service fee + 0.1% tax is typical)
+2024-07-31 * "July 2024 Platform Costs"
+  Expenses:Platform:ServiceFees        2293.50 USD  ; ~10% platform fee
+  Expenses:Platform:WithholdingTax       22.95 USD  ; ~0.1% withholding
+  Assets:AccountsReceivable           -2316.45 USD
+
+; ===== CASH CONVERSION =====
+; Cash received from platform at actual bank rate
+; Note: Exchange rate at recognition (83.50) vs receipt (78.20) creates forex impact
+2024-07-31 * "July 2024 Cash Receipts from Platform"
+  Assets:Cash:BankAccount            1618554.91 INR
+  Assets:AccountsReceivable          -20683.55 USD @ 78.20 INR  ; Actual receipt rate
+  Income:ForexGain                    -109000.00 INR  ; Forex loss from rate difference
+
+; ===== OPERATING EXPENSES =====
+2024-07-31 * "July 2024 Salaries"
+  Expenses:Salaries:TeamCompensation   267000 INR
+  Assets:Cash:BankAccount             -267000 INR
+
+2024-07-31 * "July 2024 Operations Expenses"
+  Expenses:Operations:General          286668 INR
+  Assets:Cash:BankAccount             -189000 INR
+  Liabilities:CreditCard:Business      -97668 INR
+
+2024-07-31 * "July 2024 Technology Expenses"
+  Expenses:Technology:Software          99797 INR
+  Expenses:Technology:Infrastructure    50000 INR
+  Liabilities:CreditCard:Operations   -149797 INR
+
+; ===== NOTES =====
+2024-07-31 note Assets:Cash:BankAccount "Multi-currency IT services business model"
+2024-07-31 note Income:ClientServices "Revenue from international clients via platform"
+2024-07-31 note Expenses:Platform:ServiceFees "Platform commission (typical 10-20%)"
+
+; ===== FINANCIAL SUMMARY =====
+; Gross Revenue: $23,000 USD @ 83.50 = ₹19,20,500
+; Platform Fees: $2,316.45 USD @ 83.50 = ₹19,3,424
+; Net Revenue: $20,683.55 USD
+;
+; Exchange Rate Impact:
+; - Revenue recognized @ 83.50 INR/USD
+; - Cash received @ 78.20 INR/USD
+; - Forex loss: ~₹109,000 (rate differential)
+;
+; Operating Expenses: ₹703,465
+; - Salaries: ₹267,000
+; - Operations: ₹286,668
+; - Technology: ₹149,797

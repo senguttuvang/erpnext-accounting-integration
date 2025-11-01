@@ -1,0 +1,14 @@
+# ERPNext API Client Dependencies
+
+# HTTP requests library
+requests>=2.31.0
+
+# Optional: For better datetime handling
+python-dateutil>=2.8.2
+
+# Optional: For CSV/Excel export (if using pandas)
+# pandas>=2.0.0
+# openpyxl>=3.1.0
+
+# Optional: For beancount file parsing enhancements
+# beancount>=2.3.5
